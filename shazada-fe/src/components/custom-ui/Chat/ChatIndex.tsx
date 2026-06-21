@@ -247,8 +247,7 @@ const ChatIndex = ({ openChat, setOpenChat }: PropTypes) => {
                           className="mt-2 flex gap-3 overflow-x-auto custom-scrollbar pb-2 w-full max-w-[90%] snap-x"
                         >
                           {products.map((prod) => (
-                            <Link
-                              href={`/products/${prod.id}`}
+                            <div
                               key={prod.id}
                               className="snap-center shrink-0 w-[140px] flex flex-col bg-card/90 text-card-foreground border border-border/60 rounded-xl overflow-hidden shadow-sm backdrop-blur-md transition-transform hover:scale-[1.02] hover:border-primary/50"
                             >
@@ -270,7 +269,7 @@ const ChatIndex = ({ openChat, setOpenChat }: PropTypes) => {
                                   Rp {prod.price.toLocaleString("id-ID")}
                                 </p>
                               </div>
-                            </Link>
+                            </div>
                           ))}
                         </div>
                       );
