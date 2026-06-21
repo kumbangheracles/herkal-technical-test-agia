@@ -214,26 +214,6 @@ const ProductModal = ({
               List detail product dengan nama {dataProduct?.title}
             </DialogDescription>
           )}
-
-          {isDisplayCart && (
-            <button
-              onClick={(e) => {
-                if (dataProduct?.stock === 0) {
-                  toast.info("Tidak bisa add to cart stock habis.");
-                  return;
-                }
-
-                e.stopPropagation();
-                isInCart
-                  ? removeFromCart(dataProduct.id)
-                  : addToCart(dataProduct);
-              }}
-              className={`px-3 py-1 absolute -right-3 -top-3 rounded-3xl border-foreground font-mono font-semibold transition-colors
-      ${isInCart ? "bg-primary text-primary-foreground" : "bg-secondary"}`}
-            >
-              {isInCart ? "✓ Remove" : "+ Add Cart"}
-            </button>
-          )}
         </DialogHeader>
         <>
           {/* Detail ============ */}
@@ -435,6 +415,27 @@ const ProductModal = ({
                 "Delete"
               )}
             </Button>
+          )}
+
+          {modalType === "detail" && isDisplayCart && (
+            <>
+              <Button
+                onClick={(e) => {
+                  if (dataProduct?.stock === 0) {
+                    toast.info("Tidak bisa add to cart stock habis.");
+                    return;
+                  }
+
+                  e.stopPropagation();
+                  isInCart
+                    ? removeFromCart(dataProduct.id)
+                    : addToCart(dataProduct);
+                }}
+                variant={isInCart ? "destructive" : "outline"}
+              >
+                {isInCart ? "✓ Remove" : "+ Add Cart"}
+              </Button>
+            </>
           )}
         </DialogFooter>
       </DialogContent>

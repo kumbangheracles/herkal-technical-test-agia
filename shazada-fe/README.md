@@ -2,6 +2,14 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+=== Admin ===
+email: herkal@admin.com
+password: admin123
+
+=== customer ===
+email: customer@test.com
+password: password123
+
 First copy .env.example to .env.local (alse make this file)
 
 ```bash
