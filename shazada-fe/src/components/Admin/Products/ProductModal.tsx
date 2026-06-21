@@ -312,11 +312,11 @@ const ProductModal = ({
                 <Label className="px-3">Category</Label>
                 <AppCategorySelect
                   categories={dataCategories ?? []}
-                  value={dataProduct?.category_id}
+                  value={formData?.category_id}
                   onChange={(categoryId) =>
                     setFormData?.({ ...formData, category_id: categoryId })
                   }
-                  placeholder="Pilih kategori produk"
+                  // placeholder="Pilih kategori produk"
                 />
                 {errors?.category_id && (
                   <p className="text-sm text-start text-red-500 px-3 text-[12px] font-semibold font-mono">
