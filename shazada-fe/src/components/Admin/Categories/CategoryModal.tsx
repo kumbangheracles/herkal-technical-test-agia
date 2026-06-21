@@ -232,11 +232,11 @@ const CategoryModal = ({
                 label={"Updated At"}
                 value={formatDate(dataCategory?.updated_at)}
               />
-              <div className="mt-2">
+              <div className="mt-2 max-w-full w-full">
                 <p className="text-foreground text-sm font-semibold">
                   Description:
                 </p>
-                <div className="p-3 mt-2 rounded-xl text-[12px] bg-muted">
+                <div className="p-3 mt-2 rounded-xl text-[12px] bg-muted break-all min-w-0 w-full overflow-hidden">
                   {dataCategory?.description ?? ""}
                 </div>
               </div>

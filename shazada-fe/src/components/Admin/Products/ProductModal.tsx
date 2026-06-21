@@ -274,7 +274,7 @@ const ProductModal = ({
                 <p className="text-foreground text-sm font-semibold">
                   Description:
                 </p>
-                <div className="p-3 mt-2 rounded-xl text-[12px] bg-muted">
+                <div className="p-3 mt-2 rounded-xl text-[12px] bg-muted break-words whitespace-pre-wrap">
                   {dataProduct?.description ?? ""}
                 </div>
               </div>
