@@ -375,7 +375,7 @@ const ProductModal = ({
             </DialogDescription>
           </div>
         )}
-        <DialogFooter>
+        <DialogFooter className="flex items-center gap-2 flex-row justify-end">
           <Button
             variant={
               modalType === "detail" || modalType === "delete"

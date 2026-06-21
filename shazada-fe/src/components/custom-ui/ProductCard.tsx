@@ -19,7 +19,7 @@ const formatRupiah = (angka: number) =>
 
 const ProductCard = ({
   product,
-  isDisplayCart,
+  isDisplayCart = true,
   handleOpenModal,
 }: PropTypes) => {
   const { addToCart, removeFromCart, cart } = useCart();

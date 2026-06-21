@@ -12,7 +12,7 @@ import EcommerceBgPattern from "../custom-ui/EcommerceBgPattern";
 
 import ProductCard from "../custom-ui/ProductCard";
 import ProductCardSkeleton from "../custom-ui/ProductCardSkeleton";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import ProductModal from "../Admin/Products/ProductModal";
 import { ProductProps } from "@/types/product.type";
 import {
@@ -43,22 +43,65 @@ const HomeIndex = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [selectedDataProd, setSelectedDataProd] = useState<ProductProps | null>(
-    null,
-  );
-  const [allProducts, setAllProducts] = useState<ProductProps[]>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState(
+    () => searchParams.get("search") ?? "",
+  );
+
   const page = Number(searchParams.get("page") ?? "1");
   const pageSize = Number(searchParams.get("limit") ?? "10");
   const search = searchParams.get("search") ?? undefined;
   const sortOrder =
     (searchParams.get("sort") as "newest" | "oldest" | null) ?? "newest";
   const categoryId = searchParams.get("category") || undefined;
-  const handleOpenModal = (selectedId: string) => {
-    setSelectedId(selectedId);
+  const currentCategory = searchParams.get("category") ?? "";
+
+  const { query: queryProduct } = useProducts(
+    page,
+    pageSize,
+    search,
+    sortOrder,
+    categoryId,
+  );
+  const { query: queryCat } = useCategories();
+
+  const { data: dataCategories, isPending: isPendingCat } = queryCat;
+  const {
+    data: dataProduct,
+    isPending: isPendingProd,
+    isFetching,
+  } = queryProduct;
+
+  const allProducts = useMemo(() => {
+    if (!dataProduct?.data) return [];
+
+    const categoryMap = new Map(
+      dataCategories?.data?.map((cat) => [cat.id, cat.title]) ?? [],
+    );
+
+    return dataProduct.data.map((product) => ({
+      ...product,
+      category_title: categoryMap.get(product.category_id) ?? "Tanpa Kategori",
+    })) as ProductProps[];
+  }, [dataProduct, dataCategories]);
+
+  const selectedDataProd = useMemo(() => {
+    if (!selectedId) return null;
+    return allProducts.find((item) => item.id === selectedId) ?? null;
+  }, [selectedId, allProducts]);
+
+  const handleOpenModal = (id: string) => {
+    setSelectedId(id);
     setIsOpen(true);
   };
+
+  const handleCloseModal = () => {
+    setSelectedId(null);
+    setIsOpen(false);
+  };
+
   const updateParams = (params: Record<string, string>) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
     Object.entries(params).forEach(([key, value]) => {
@@ -66,12 +109,6 @@ const HomeIndex = () => {
       else current.delete(key);
     });
     router.push(`${pathname}?${current.toString()}`, { scroll: false });
-  };
-
-  const handleCloseModal = () => {
-    setSelectedId(null);
-    setIsOpen(false);
-    setSelectedDataProd(null);
   };
 
   const handleFilterChange = (key: string, value: string) => {
@@ -83,26 +120,6 @@ const HomeIndex = () => {
     }
     router.push(`${pathname}?${params.toString()}`);
   };
-
-  const { query: queryProduct } = useProducts(
-    page,
-    pageSize,
-    search,
-    sortOrder,
-    categoryId,
-  );
-  const { query: queryCat } = useCategories();
-  const { data: dataCategories, isPending: isPendingCat } = queryCat;
-  const {
-    data: dataProduct,
-    isPending: isPendingProd,
-    isFetching,
-  } = queryProduct;
-  const currentCategory = searchParams.get("category") ?? "";
-
-  const [searchTerm, setSearchTerm] = useState(
-    () => searchParams.get("search") ?? "",
-  );
 
   const updateSearchParam = useCallback(
     (term: string) => {
@@ -116,18 +133,6 @@ const HomeIndex = () => {
     },
     [searchParams, pathname, router],
   );
-
-  useEffect(() => {
-    if (dataProduct?.data) {
-      setAllProducts(dataProduct.data);
-    }
-  }, [dataProduct]);
-
-  useEffect(() => {
-    const dataProd = dataProduct?.data?.find((item) => item.id === selectedId);
-
-    setSelectedDataProd(dataProd as ProductProps);
-  }, [selectedId]);
 
   useEffect(() => {
     const handler = setTimeout(() => updateSearchParam(searchTerm), 400);
@@ -266,12 +271,7 @@ const HomeIndex = () => {
 
           <div className="grid grid-cols-2 justify-center items-center mx-auto xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2.5 sm:gap-3">
             {dataCategories?.data?.map((item) => (
-              <CardCategory
-                key={item.id}
-                {...item}
-                // onClick={(id) => handleFilterCategory(id)}
-                // isActive={selectedCategory === item.id}
-              />
+              <CardCategory key={item.id} {...item} />
             ))}
           </div>
           <div className="flex flex-wrap items-center gap-2 w-full max-w-1/2">
@@ -311,7 +311,7 @@ const HomeIndex = () => {
             <h4 className="font-semibold text-2xl font-mono pb-4 px-3">
               List Products
             </h4>
-            {dataProduct?.data?.length === 0 && (
+            {allProducts?.length === 0 && (
               <div className="flex items-center w-full justify-center p-2 sm:p-7">
                 <Empty>
                   <EmptyHeader>
@@ -328,10 +328,10 @@ const HomeIndex = () => {
                 </Empty>
               </div>
             )}
-            {dataProduct?.data?.length !== 0 && (
+            {allProducts?.length !== 0 && (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
                 <>
-                  {dataProduct?.data?.map((product) => (
+                  {allProducts?.map((product) => (
                     <ProductCard
                       product={product}
                       key={product.id}

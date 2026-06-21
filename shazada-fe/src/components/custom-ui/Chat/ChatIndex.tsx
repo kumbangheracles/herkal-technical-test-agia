@@ -190,7 +190,9 @@ const ChatIndex = ({ openChat, setOpenChat }: PropTypes) => {
                             : "bg-muted/80 text-foreground rounded-bl-sm border border-border/50"
                         }`}
                       >
-                        <p className="whitespace-pre-wrap">{part.text}</p>
+                        <p className="whitespace-pre-wrap wrap-break-word">
+                          {part.text}
+                        </p>
                       </div>
                     );
                   }
@@ -255,7 +257,7 @@ const ChatIndex = ({ openChat, setOpenChat }: PropTypes) => {
                                   src={
                                     prod.image_url || "/images/default-img.png"
                                   }
-                                  alt={prod.title}
+                                  alt={prod.title ?? "default-img"}
                                   fill
                                   className="object-cover"
                                 />
