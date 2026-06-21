@@ -10,6 +10,13 @@ npm install
 
 ```
 
+run seed
+
+```bash
+#this seed will automatically create admin and customer user in supabase for the detail check the src/scripts/seed.ts
+npm run seed
+```
+
 then run the development server:
 
 ```bash
