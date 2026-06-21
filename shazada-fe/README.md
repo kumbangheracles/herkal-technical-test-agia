@@ -132,6 +132,29 @@ Platform e-commerce general modern berbasis **Next.js** dan **Supabase** yang di
 | **Category default**          | Penambahan item "Semua Kategori" secara manual di UI | Menghindari modifikasi skema tabel database utama atau manipulasi payload API hanya untuk kebutuhan representasi visual filter.                                                    |
 | **Image fallback**            | `/images/default-img.png` via operator `??`          | Implementasi penanganan error gambar yang praktis, ringan, dan tidak membutuhkan arsitektur _error boundary_ komponen yang kompleks.                                               |
 
+## 📝 Pertanyaan Refleksi
+
+### 1. Mengapa Anda memilih tantangan ini?
+
+**Jawaban:** Karena sebelumnya saya sudah pernah membuat _chatbot_ yang terintegrasi dengan LLM (_Large Language Model_), sehingga saya sudah lebih memahami alur pengerjaan, arsitektur data, dan logika integrasinya.
+
+### 2. Bagian mana yang paling sulit?
+
+**Jawaban:** Bagian yang paling menantang adalah menyimpan riwayat pesan ke database secara efisien, lalu mengintegrasikannya dengan manajemen _session_. Tantangannya terletak pada sinkronisasi data agar riwayat pesan tersebut dapat ditampilkan kembali pada UI chat pengguna dengan lancar, sekaligus bisa ditarik ke dalam Admin Panel secara akurat untuk kebutuhan monitoring data percakapan.
+
+### 3. Apabila diberikan tambahan waktu satu hari, bagian mana yang akan Anda perbaiki?
+
+**Jawaban:** Saya akan fokus menambahkan fitur transaksi (_checkout_) dan memperbarui sistem _carting_. Saat ini fitur keranjang belanja sudah berjalan namun datanya masih statis (disimpan di `localStorage`). Dengan tambahan waktu, saya akan mengubah arsitektur _cart_ menjadi dinamis (tersinkronisasi dengan database Supabase). Jika data _cart_ sudah dinamis, proses integrasi data produk ke platform _payment gateway_ seperti Midtrans, Xendit, atau Doku akan menjadi jauh lebih mudah dan aman.
+
+### 4. Bagaimana cara Anda melakukan scaling terhadap aplikasi ini apabila jumlah pengguna bertambah?
+
+**Jawaban:** Untuk melakukan _scaling_ pada aplikasi berbasis Next.js dan Supabase ini, strategi yang akan saya terapkan meliputi:
+
+- **Optimasi Frontend & Caching:** Memanfaatkan fitur _Incremental Static Regeneration (ISR)_ di Next.js untuk halaman produk dan kategori. Dengan begitu, halaman dapat di-_cache_ di level CDN (misalnya via Vercel) untuk mengurangi beban langsung ke database saat terjadi lonjakan pengunjung.
+- **Database Indexing & Connection Pooling:** Menambahkan database _index_ pada kolom yang sering diakses (seperti pencarian nama produk, kategori, dan email pada tabel chat). Saya juga akan memanfaatkan _Connection Pooler_ bawaan Supabase (Supavisor) untuk mengelola ribuan koneksi database konkuren dari pengguna secara efisien.
+- **Arsitektur Real-time yang Terfilter:** Pada fitur _live chat_, memastikan performa tetap terjaga dengan menerapkan filter _channel_ yang ketat pada Supabase Realtime serta mengaktifkan _Row Level Security (RLS)_, sehingga server tidak melakukan _broadcast_ data yang tidak perlu ke pengguna lain.
+- **Pemisahan Media Storage:** Memastikan semua gambar produk dan aset visual menggunakan Supabase Storage yang terhubung dengan CDN, serta mengoptimalkannya menggunakan komponen `<Image />` dari Next.js untuk menghemat bandwidth server.
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
