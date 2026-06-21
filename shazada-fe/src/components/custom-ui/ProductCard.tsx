@@ -56,7 +56,7 @@ const ProductCard = ({
 
         <div className="relative w-full aspect-square bg-muted overflow-hidden">
           <Image
-            src={product.image_url ?? "/images/default-product.png"}
+            src={product.image_url ?? "/images/default-img.png"}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             alt={product.title ?? "product image"}

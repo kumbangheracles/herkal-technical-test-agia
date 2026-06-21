@@ -24,7 +24,7 @@ import {
   EmptyTitle,
 } from "../ui/empty";
 import { Button } from "../ui/button";
-import { Info, ArrowRight, Tag, Truck } from "lucide-react";
+import { Info, ArrowRight, Tag, Truck, Loader2 } from "lucide-react";
 import CardCategory from "../custom-ui/CardCategory";
 const filters: FilterDef[] = [
   {
@@ -47,9 +47,10 @@ const HomeIndex = () => {
   const [selectedDataProd, setSelectedDataProd] = useState<ProductProps | null>(
     null,
   );
+  const [allProducts, setAllProducts] = useState<ProductProps[]>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const page = Number(searchParams.get("page") ?? "1");
-  const pageSize = Number(searchParams.get("pageSize") ?? "10");
+  const pageSize = Number(searchParams.get("limit") ?? "10");
   const search = searchParams.get("search") ?? undefined;
   const sortOrder =
     (searchParams.get("sort") as "newest" | "oldest" | null) ?? "newest";
@@ -57,6 +58,14 @@ const HomeIndex = () => {
   const handleOpenModal = (selectedId: string) => {
     setSelectedId(selectedId);
     setIsOpen(true);
+  };
+  const updateParams = (params: Record<string, string>) => {
+    const current = new URLSearchParams(Array.from(searchParams.entries()));
+    Object.entries(params).forEach(([key, value]) => {
+      if (value) current.set(key, value);
+      else current.delete(key);
+    });
+    router.push(`${pathname}?${current.toString()}`, { scroll: false });
   };
 
   const handleCloseModal = () => {
@@ -84,7 +93,11 @@ const HomeIndex = () => {
   );
   const { query: queryCat } = useCategories();
   const { data: dataCategories, isPending: isPendingCat } = queryCat;
-  const { data: dataProduct, isPending: isPendingProd } = queryProduct;
+  const {
+    data: dataProduct,
+    isPending: isPendingProd,
+    isFetching,
+  } = queryProduct;
   const currentCategory = searchParams.get("category") ?? "";
 
   const [searchTerm, setSearchTerm] = useState(
@@ -103,6 +116,13 @@ const HomeIndex = () => {
     },
     [searchParams, pathname, router],
   );
+
+  useEffect(() => {
+    if (dataProduct?.data) {
+      setAllProducts(dataProduct.data);
+    }
+  }, [dataProduct]);
+
   useEffect(() => {
     const dataProd = dataProduct?.data?.find((item) => item.id === selectedId);
 
@@ -118,6 +138,20 @@ const HomeIndex = () => {
     setSearchTerm("");
     updateSearchParam("");
   };
+
+  useEffect(() => {
+    if (searchParams.get("limit") !== "10") {
+      updateParams({ limit: "10" });
+    }
+  }, [search, sortOrder, categoryId]);
+
+  const handleLimitChange = () => {
+    const newLimit = pageSize + 10;
+    updateParams({ limit: newLimit.toString() });
+  };
+
+  const hasMore =
+    (dataProduct?.data?.length ?? 0) < (dataProduct?.totalCount ?? 0);
   if (isPendingCat || isPendingProd)
     return (
       <AppGuestLayout>
@@ -305,6 +339,23 @@ const HomeIndex = () => {
                     />
                   ))}
                 </>
+              </div>
+            )}
+
+            {hasMore && (
+              <div className="w-full flex items-center justify-center pt-7">
+                <Button
+                  className="mx-auto p-4 py-4 text-xl font-semibold"
+                  variant="secondary"
+                  onClick={handleLimitChange}
+                  disabled={isFetching || isPendingProd}
+                >
+                  {isFetching || isPendingProd ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    "More"
+                  )}
+                </Button>
               </div>
             )}
           </div>

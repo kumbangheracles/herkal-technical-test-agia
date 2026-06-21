@@ -222,7 +222,7 @@ const AppGuestLayout = ({ children }: PropTypes) => {
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <div className="flex items-center gap-3">
-                        <p className="font-semibold text-sm text-background tracking-wide font-mono py-1 px-2 bg-card-foreground rounded-3xl">
+                        <p className="font-semibold cursor-pointer text-sm text-background tracking-wide font-mono py-1 px-2 bg-card-foreground rounded-3xl">
                           {dataProfile?.username}
                         </p>
                       </div>
