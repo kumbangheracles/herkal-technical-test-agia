@@ -1,4 +1,5 @@
 "use server";
+import { NEXT_PUBLIC_BASE_URL } from "@/lib/environtments";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -32,7 +33,7 @@ export async function registerAction(data: TRegister) {
     password,
     options: {
       data: { username, full_name },
-      emailRedirectTo: "http://localhost:3000/auth/callback",
+      emailRedirectTo: `${NEXT_PUBLIC_BASE_URL}/auth/callback`,
     },
   });
 

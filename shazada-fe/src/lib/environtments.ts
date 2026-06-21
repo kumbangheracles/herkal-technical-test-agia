@@ -6,6 +6,8 @@
 // pernah import file itu dari sini atau dari komponen client manapun.
 
 export const BASE_API_URL: string = process.env.NEXT_PUBLIC_API_BASE_URL || "";
+export const NEXT_PUBLIC_BASE_URL: string =
+  process.env.NEXT_PUBLIC_BASE_URL || "";
 
 export const NEXT_PUBLIC_SUPABASE_URL: string =
   process.env.NEXT_PUBLIC_SUPABASE_URL || "";

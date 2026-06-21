@@ -102,7 +102,7 @@ const RegisterIndex = () => {
 
   if (searchParams.has("successActivation")) {
     setTimeout(() => {
-      router.push("/");
+      router.push("/auth/login");
     }, 2500);
     return (
       <section className="min-h-screen w-full flex items-center justify-center relative">
