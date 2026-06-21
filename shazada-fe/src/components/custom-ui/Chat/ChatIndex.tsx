@@ -24,7 +24,6 @@ const ChatIndex = ({ openChat, setOpenChat }: PropTypes) => {
   const [needsLogin, setNeedsLogin] = useState(false);
   const sessionCreationStarted = useRef(false);
 
-  // useChat dipanggil tanpa initialMessages — kita isi via setMessages setelah load async
   const { messages, sendMessage, setMessages, status, error } = useChat({
     transport: new DefaultChatTransport({
       api: "/api/chat",
@@ -154,7 +153,7 @@ const ChatIndex = ({ openChat, setOpenChat }: PropTypes) => {
             Kamu perlu login untuk mulai mengobrol dengan Shazada's bot.
           </p>
           <Link
-            href="/login"
+            href="/auth/login"
             className="mt-2 text-xs font-semibold px-4 py-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
           >
             Login sekarang
