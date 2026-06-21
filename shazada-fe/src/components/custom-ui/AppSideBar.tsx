@@ -31,6 +31,7 @@ import {
   MonitorCog,
   LayoutDashboardIcon,
   ChartBarBig,
+  Home,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -48,6 +49,7 @@ import {
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 type MenuItem = {
   title: string;
   url: string;
@@ -91,6 +93,7 @@ export default function AppSidebar() {
   const { state } = useSidebar();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter();
   // const [username, setUsername] = useState<string>("");
   const handleLogout = async () => {
     try {
@@ -219,6 +222,13 @@ export default function AppSidebar() {
                   <LogOut className="size-4 mr-2" />
                   Logout
                 </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="text-foreground hover:bg-foreground/50 cursor-pointer"
+                  onClick={() => router.push("/")}
+                >
+                  <Home className="size-4 mr-2" />
+                  Explore
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarMenuItem>
@@ -226,7 +236,7 @@ export default function AppSidebar() {
       </SidebarFooter>
 
       <Dialog open={isOpen}>
-        <DialogContent>
+        <DialogContent showCloseButton={false}>
           <DialogHeader>
             <DialogTitle>Log Out</DialogTitle>
           </DialogHeader>

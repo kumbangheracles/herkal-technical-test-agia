@@ -10,6 +10,7 @@ import {
   Loader2,
   LogOut,
   MessageCircleMore,
+  MonitorCog,
 } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { useStateContext } from "@/hooks/useStateContext";
@@ -237,6 +238,16 @@ const AppGuestLayout = ({ children }: PropTypes) => {
                         <LogOut className="size-4 mr-2" />
                         Logout
                       </DropdownMenuItem>
+
+                      {dataProfile?.role === "admin" && (
+                        <DropdownMenuItem
+                          className="text-foreground cursor-pointer"
+                          onClick={() => router?.push("/admin/dashboard")}
+                        >
+                          <MonitorCog className="size-4 mr-2" />
+                          Admin Panel
+                        </DropdownMenuItem>
+                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 ) : (
@@ -294,6 +305,14 @@ const AppGuestLayout = ({ children }: PropTypes) => {
               </p>
             )}
           </h4>
+          {dataProfile?.role === "admin" && (
+            <h4
+              onClick={() => router.push("/admin/dashboard")}
+              className={`text-[10px] flex items-center justify-center gap-2 relative mt-3 bg-muted text-center text-muted-foreground font-semibold rounded-4xl py-2 px-4 `}
+            >
+              Admin Panel
+            </h4>
+          )}
           <h4
             onClick={() => {
               dataProfile
@@ -304,6 +323,7 @@ const AppGuestLayout = ({ children }: PropTypes) => {
           >
             {dataProfile ? "Log Out" : "Log In"}
           </h4>
+
           {/* <h4
             onClick={() => {
               (router.push("/shop"), setActiveNav(false));
@@ -487,7 +507,7 @@ const AppGuestLayout = ({ children }: PropTypes) => {
         </div>
       </footer>
       <Dialog open={isOpen}>
-        <DialogContent>
+        <DialogContent showCloseButton={false}>
           <DialogHeader>
             <DialogTitle>Log Out</DialogTitle>
           </DialogHeader>
